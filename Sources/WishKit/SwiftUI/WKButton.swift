@@ -68,11 +68,12 @@ struct WKButton: View {
     }
 
     var textColor: Color {
+        let button = style == .primary ? WishKit.config.buttons.saveButton : WishKit.config.buttons.cancelButton
         switch colorScheme {
         case .light:
-            return WishKit.config.buttons.saveButton.textColor.light
+            return button.textColor.light
         case .dark:
-            return WishKit.config.buttons.saveButton.textColor.dark
+            return button.textColor.dark
         }
     }
 
