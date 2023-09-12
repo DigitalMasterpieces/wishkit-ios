@@ -116,7 +116,9 @@ final class WishListVC: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        updateDoneButton()
+        if WishKit.config.showDoneButton {
+            updateDoneButton()
+        }
     }
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
@@ -313,12 +315,14 @@ extension WishListVC {
         view.addSubview(stackView)
         view.addSubview(addWishButton)
 
-        doneContainer.addSubview(doneButton)
-        view.addSubview(doneContainer)
-
         switchContainer.addSubview(switchListControl)
 
-        stackView.setCustomSpacing(0, after: doneContainer)
+        if WishKit.config.showDoneButton {
+            doneContainer.addSubview(doneButton)
+            view.addSubview(doneContainer)
+            stackView.setCustomSpacing(0, after: doneContainer)
+        }
+
         stackView.addArrangedSubview(switchContainer)
         stackView.addArrangedSubview(tableView)
 
@@ -342,20 +346,22 @@ extension WishListVC {
 
         let spacing: CGFloat = WishKit.config.buttons.segmentedControl.display == .hide ? 0 : 10
 
-        doneContainer.anchor(
-            top: view.topAnchor,
-            trailing: view.trailingAnchor,
-            padding: UIEdgeInsets(top: spacing, left: 0, bottom: 0, right: 0),
-            size: CGSize(width: 0, height: 35)
-        )
+        if WishKit.config.showDoneButton {
+            doneContainer.anchor(
+                top: view.topAnchor,
+                trailing: view.trailingAnchor,
+                padding: UIEdgeInsets(top: spacing, left: 0, bottom: 0, right: 0),
+                size: CGSize(width: 0, height: 35)
+            )
 
-        doneButton.anchor(
-            top: doneContainer.topAnchor,
-            leading: doneContainer.leadingAnchor,
-            bottom: doneContainer.bottomAnchor,
-            trailing: doneContainer.trailingAnchor,
-            padding: UIEdgeInsets(top: 10, left: 0, bottom: 0, right: 65)
-        )
+            doneButton.anchor(
+                top: doneContainer.topAnchor,
+                leading: doneContainer.leadingAnchor,
+                bottom: doneContainer.bottomAnchor,
+                trailing: doneContainer.trailingAnchor,
+                padding: UIEdgeInsets(top: 10, left: 0, bottom: 0, right: 65)
+            )
+        }
 
         switchContainer.anchor(size: CGSize(width: 0, height: 50))
 
@@ -406,7 +412,9 @@ extension WishListVC {
 extension WishListVC {
 
     override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
-        updateDoneButton()
+        if WishKit.config.showDoneButton {
+            updateDoneButton()
+        }
     }
 
     func updateDoneButton() {

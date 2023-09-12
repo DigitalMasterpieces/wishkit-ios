@@ -19,6 +19,8 @@ public struct Configuration {
 
     public var tabBar = TabBar()
 
+    public var showDoneButton = true
+
     public var expandDescriptionInList: Bool = false
 
     public var dropShadow: Display = .show
