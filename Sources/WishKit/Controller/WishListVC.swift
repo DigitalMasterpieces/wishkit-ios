@@ -446,6 +446,8 @@ extension WishListVC: WishVMDelegate {
     }
 
     func didSelect(wishResponse: WishResponse) {
+        guard WishKit.config.showCommentSection else { return }
+
         let detailWishView = DetailWishView(
             wishResponse: wishResponse,
             voteActionCompletion: fetchWishList

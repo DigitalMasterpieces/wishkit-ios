@@ -30,7 +30,13 @@ final class WishCell: UITableViewCell {
 
     private let badgeView = BadgeView()
 
-    private let descriptionLabel = UILabel(font: .systemFont(ofSize: 13), lineCount: WishKit.config.expandDescriptionInList ? 0 : 1)
+    private var descriptionLabel = UILabel(font: .systemFont(ofSize: 13), lineCount: WishKit.config.expandDescriptionInList ? 0 : 1)
+
+    public var isExpanded = WishKit.config.expandDescriptionInList {
+        didSet {
+            self.descriptionLabel.numberOfLines = self.isExpanded ? 0 : 1
+        }
+    }
 
     var delegate: WishCellDelegate?
 

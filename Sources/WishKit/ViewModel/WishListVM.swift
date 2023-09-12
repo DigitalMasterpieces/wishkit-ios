@@ -146,21 +146,29 @@ extension WishListVM: UITableViewDataSource {
 
 extension WishListVM: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        var wishResponse: WishResponse
+        if WishKit.config.showCommentSection {
+            var wishResponse: WishResponse
 
-        switch currentListKind {
-        case .requested:
-            wishResponse = approvedWishList[indexPath.row]
-        case .implemented:
-            wishResponse = implementedWishList[indexPath.row]
+            switch currentListKind {
+                case .requested:
+                    wishResponse = approvedWishList[indexPath.row]
+                case .implemented:
+                    wishResponse = implementedWishList[indexPath.row]
+            }
+
+            guard let delegate = delegate else {
+                printError(self, "Delegate is missing.")
+                return
+            }
+
+            delegate.didSelect(wishResponse: wishResponse)
+        } else {
+            guard let currentCell = tableView.cellForRow(at: indexPath) as? WishCell else { return }
+            tableView.beginUpdates()
+            currentCell.isExpanded.toggle()
+            tableView.endUpdates()
         }
 
-        guard let delegate = delegate else {
-            printError(self, "Delegate is missing.")
-            return
-        }
-
-        delegate.didSelect(wishResponse: wishResponse)
     }
 }
 
