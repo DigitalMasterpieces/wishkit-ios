@@ -19,6 +19,7 @@ public struct Configuration {
 
     public var tabBar = TabBar()
 
+    /// This shows/hides the Done button that is only visible in landscape mode.
     public var showDoneButton = true
 
     public var expandDescriptionInList: Bool = false
