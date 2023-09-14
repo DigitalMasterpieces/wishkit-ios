@@ -32,6 +32,7 @@ final class WishCell: UITableViewCell {
 
     private var descriptionLabel = UILabel(font: .systemFont(ofSize: 13), lineCount: WishKit.config.expandDescriptionInList ? 0 : 1)
 
+    /// This Boolean can be toggled to expand/shrink the description of the `WishCell`.
     public var isExpanded = WishKit.config.expandDescriptionInList {
         didSet {
             self.descriptionLabel.numberOfLines = self.isExpanded ? 0 : 1

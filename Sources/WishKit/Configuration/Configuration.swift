@@ -19,6 +19,7 @@ public struct Configuration {
 
     public var tabBar = TabBar()
 
+    /// Deactivates the `DetailWishView`, instead the description of the wish is expanded/shrunk by tapping on it.
     public var showCommentSection: Bool = true
 
     public var expandDescriptionInList: Bool = false

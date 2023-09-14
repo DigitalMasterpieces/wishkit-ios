@@ -147,6 +147,7 @@ extension WishListVM: UITableViewDataSource {
 extension WishListVM: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if WishKit.config.showCommentSection {
+            // A new view with an expanded wish cell and a comment section is presented.
             var wishResponse: WishResponse
 
             switch currentListKind {
@@ -163,6 +164,7 @@ extension WishListVM: UITableViewDelegate {
 
             delegate.didSelect(wishResponse: wishResponse)
         } else {
+            // The description should be expanded/shrunk with an animation.
             guard let currentCell = tableView.cellForRow(at: indexPath) as? WishCell else { return }
             tableView.beginUpdates()
             currentCell.isExpanded.toggle()
