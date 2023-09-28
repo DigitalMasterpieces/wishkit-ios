@@ -136,67 +136,53 @@ struct CreateWishView: View {
                                 .clipShape(RoundedRectangle(cornerRadius: WishKit.config.cornerRadius, style: .continuous))
                         }
                     }
+                    WKButton(
+                        text: WishKit.config.localization.save,
+                        action: submitAction,
+                        style: .primary,
+                        isLoading: $isButtonLoading,
+                        size: CGSize(width: 200, height: 45)
+                    )
+                    .disabled(isButtonDisabled)
+                    .alert(isPresented: $alertModel.showAlert) {
+                        switch alertModel.alertReason {
+                            case .successfullyCreated:
+                                let button = Alert.Button.default(Text(WishKit.config.localization.ok), action: dismissAction)
 
-                    HStack {
-                        Spacer()
-                        WKButton(
-                            text: WishKit.config.localization.cancel,
-                            action: dismissAction,
-                            style: .secondary,
-                            isLoading: $isButtonLoading,
-                            size: CGSize(width: 200, height: 45)
-                        )
-                        Spacer()
-                        WKButton(
-                            text: WishKit.config.localization.save,
-                            action: submitAction,
-                            style: .primary,
-                            isLoading: $isButtonLoading,
-                            size: CGSize(width: 200, height: 45)
-                        )
-                        .disabled(isButtonDisabled)
-                        .alert(isPresented: $alertModel.showAlert) {
-                            switch alertModel.alertReason {
-                                case .successfullyCreated:
-                                    let button = Alert.Button.default(Text(WishKit.config.localization.ok), action: dismissAction)
+                                return Alert(
+                                    title: Text(WishKit.config.localization.info),
+                                    message: Text(WishKit.config.localization.successfullyCreated),
+                                    dismissButton: button
+                                )
+                            case .createReturnedError(let errorText):
+                                let button = Alert.Button.default(Text(WishKit.config.localization.ok))
 
-                                    return Alert(
-                                        title: Text(WishKit.config.localization.info),
-                                        message: Text(WishKit.config.localization.successfullyCreated),
-                                        dismissButton: button
-                                    )
-                                case .createReturnedError(let errorText):
-                                    let button = Alert.Button.default(Text(WishKit.config.localization.ok))
+                                return Alert(
+                                    title: Text(WishKit.config.localization.info),
+                                    message: Text(errorText),
+                                    dismissButton: button
+                                )
+                            case .emailRequired:
+                                let button = Alert.Button.default(Text(WishKit.config.localization.ok))
 
-                                    return Alert(
-                                        title: Text(WishKit.config.localization.info),
-                                        message: Text(errorText),
-                                        dismissButton: button
-                                    )
-                                case .emailRequired:
-                                    let button = Alert.Button.default(Text(WishKit.config.localization.ok))
+                                return Alert(
+                                    title: Text(WishKit.config.localization.info),
+                                    message: Text(WishKit.config.localization.emailRequiredText),
+                                    dismissButton: button
+                                )
+                            case .emailFormatWrong:
+                                let button = Alert.Button.default(Text(WishKit.config.localization.ok))
 
-                                    return Alert(
-                                        title: Text(WishKit.config.localization.info),
-                                        message: Text(WishKit.config.localization.emailRequiredText),
-                                        dismissButton: button
-                                    )
-                                case .emailFormatWrong:
-                                    let button = Alert.Button.default(Text(WishKit.config.localization.ok))
-
-                                    return Alert(
-                                        title: Text(WishKit.config.localization.info),
-                                        message: Text(WishKit.config.localization.emailFormatWrongText),
-                                        dismissButton: button
-                                    )
-                                case .none:
-                                    let button = Alert.Button.default(Text(WishKit.config.localization.ok))
-                                    return Alert(title: Text(""), dismissButton: button)
-                            }
+                                return Alert(
+                                    title: Text(WishKit.config.localization.info),
+                                    message: Text(WishKit.config.localization.emailFormatWrongText),
+                                    dismissButton: button
+                                )
+                            case .none:
+                                let button = Alert.Button.default(Text(WishKit.config.localization.ok))
+                                return Alert(title: Text(""), dismissButton: button)
                         }
-                        Spacer()
                     }
-
                 }
                 .frame(maxWidth: 700)
                 .padding()
