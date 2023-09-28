@@ -79,7 +79,7 @@ struct WKButton: View {
     var backgroundColor: Color {
         switch colorScheme {
         case .light:
-                return PrivateTheme.elementBackgroundColor.light
+            return PrivateTheme.elementBackgroundColor.light
         case .dark:
             return PrivateTheme.elementBackgroundColor.dark
         }
