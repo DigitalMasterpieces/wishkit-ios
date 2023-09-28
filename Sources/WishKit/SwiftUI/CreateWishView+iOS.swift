@@ -146,41 +146,41 @@ struct CreateWishView: View {
                     .disabled(isButtonDisabled)
                     .alert(isPresented: $alertModel.showAlert) {
                         switch alertModel.alertReason {
-                            case .successfullyCreated:
-                                let button = Alert.Button.default(Text(WishKit.config.localization.ok), action: dismissAction)
+                        case .successfullyCreated:
+                            let button = Alert.Button.default(Text(WishKit.config.localization.ok), action: dismissAction)
 
-                                return Alert(
-                                    title: Text(WishKit.config.localization.info),
-                                    message: Text(WishKit.config.localization.successfullyCreated),
-                                    dismissButton: button
-                                )
-                            case .createReturnedError(let errorText):
-                                let button = Alert.Button.default(Text(WishKit.config.localization.ok))
+                            return Alert(
+                                title: Text(WishKit.config.localization.info),
+                                message: Text(WishKit.config.localization.successfullyCreated),
+                                dismissButton: button
+                            )
+                        case .createReturnedError(let errorText):
+                            let button = Alert.Button.default(Text(WishKit.config.localization.ok))
 
-                                return Alert(
-                                    title: Text(WishKit.config.localization.info),
-                                    message: Text(errorText),
-                                    dismissButton: button
-                                )
-                            case .emailRequired:
-                                let button = Alert.Button.default(Text(WishKit.config.localization.ok))
+                            return Alert(
+                                title: Text(WishKit.config.localization.info),
+                                message: Text(errorText),
+                                dismissButton: button
+                            )
+                        case .emailRequired:
+                            let button = Alert.Button.default(Text(WishKit.config.localization.ok))
 
-                                return Alert(
-                                    title: Text(WishKit.config.localization.info),
-                                    message: Text(WishKit.config.localization.emailRequiredText),
-                                    dismissButton: button
-                                )
-                            case .emailFormatWrong:
-                                let button = Alert.Button.default(Text(WishKit.config.localization.ok))
+                            return Alert(
+                                title: Text(WishKit.config.localization.info),
+                                message: Text(WishKit.config.localization.emailRequiredText),
+                                dismissButton: button
+                            )
+                        case .emailFormatWrong:
+                            let button = Alert.Button.default(Text(WishKit.config.localization.ok))
 
-                                return Alert(
-                                    title: Text(WishKit.config.localization.info),
-                                    message: Text(WishKit.config.localization.emailFormatWrongText),
-                                    dismissButton: button
-                                )
-                            case .none:
-                                let button = Alert.Button.default(Text(WishKit.config.localization.ok))
-                                return Alert(title: Text(""), dismissButton: button)
+                            return Alert(
+                                title: Text(WishKit.config.localization.info),
+                                message: Text(WishKit.config.localization.emailFormatWrongText),
+                                dismissButton: button
+                            )
+                        case .none:
+                            let button = Alert.Button.default(Text(WishKit.config.localization.ok))
+                            return Alert(title: Text(""), dismissButton: button)
                         }
                     }
                 }
