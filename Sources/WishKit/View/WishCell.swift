@@ -296,41 +296,15 @@ extension WishCell {
             return
         }
 
-        var rootViewController = UIApplication.shared.windows.first(where: \.isKeyWindow)?.rootViewController
-
-        if #available(iOS 15, *) {
-            rootViewController = UIApplication
-                .shared
-                .connectedScenes
-                .compactMap { ($0 as? UIWindowScene)?.keyWindow }
-                .first?
-                .rootViewController
-        }
-
-        if let rootViewController = rootViewController, response.state == .implemented {
-            AlertManager.confirmMessage(on: rootViewController, message: WishKit.config.localization.youCanNotVoteForAnImplementedWish)
-            return
-        }
-
         // Check if it's the users own wish.
         if response.userUUID == UUIDManager.getUUID() {
             printWarning(self, WishKit.config.localization.youCanNotVoteForYourOwnWish)
-
-            if let rootViewController = rootViewController {
-                AlertManager.confirmMessage(on: rootViewController, message: WishKit.config.localization.youCanNotVoteForYourOwnWish)
-            }
-
             return
         }
 
         // Check if the user already voted.
         if response.votingUsers.contains(where: { $0.uuid == UUIDManager.getUUID() }) {
             printWarning(self, WishKit.config.localization.youCanOnlyVoteOnce)
-
-            if let rootViewController = rootViewController {
-                AlertManager.confirmMessage(on: rootViewController, message: WishKit.config.localization.youCanOnlyVoteOnce)
-            }
-
             return
         }
 
@@ -347,14 +321,8 @@ extension WishCell {
                 delegate.voteWasTapped()
             case .failure(let error):
                 printError(self, error.reason.description)
-                DispatchQueue.main.async {
-                    if let rootViewController = rootViewController {
-                        AlertManager.confirmMessage(on: rootViewController, message: error.reason.description)
-                    }
-                }
             }
         }
-
     }
 }
 #endif
