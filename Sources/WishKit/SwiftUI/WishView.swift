@@ -40,8 +40,10 @@ struct WishView: View {
             return nil
         }
         
-        return WishKit.config.expandDescriptionInList ? nil : 1
+        return self.isExpanded ? nil : 1
     }
+
+    @State private var isExpanded = WishKit.config.expandDescriptionInList
 
     init(wishResponse: WishResponse, viewKind: ViewKind, voteActionCompletion: @escaping (() -> Void)) {
         self.wishResponse = wishResponse
@@ -120,6 +122,9 @@ struct WishView: View {
         .background(backgroundColor)
         .clipShape(RoundedRectangle(cornerRadius: WishKit.config.cornerRadius, style: .continuous))
         .wkShadow()
+        .onTapGesture {
+            self.isExpanded.toggle()
+        }
     }
 
     func badgeColor(for wishState: WishState) -> Color {
