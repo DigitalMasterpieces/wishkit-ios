@@ -106,13 +106,19 @@ struct WishlistViewIOS: View {
 
                     if getList().count > 0 {
                         ForEach(getList()) { wish in
-                            NavigationLink(destination: {
-                                DetailWishView(wishResponse: wish, voteActionCompletion: { wishModel.fetchList() })
-                            }, label: {
+                            if WishKit.config.commentSection == .show {
+                                NavigationLink(destination: {
+                                    DetailWishView(wishResponse: wish, voteActionCompletion: { wishModel.fetchList() })
+                                }, label: {
+                                    WishView(wishResponse: wish, viewKind: .list, voteActionCompletion: { wishModel.fetchList() })
+                                        .padding(.all, 5)
+                                        .frame(maxWidth: 700)
+                                })
+                            } else {
                                 WishView(wishResponse: wish, viewKind: .list, voteActionCompletion: { wishModel.fetchList() })
                                     .padding(.all, 5)
                                     .frame(maxWidth: 700)
-                            })
+                            }
                         }.transition(.opacity)
                     }
                 }

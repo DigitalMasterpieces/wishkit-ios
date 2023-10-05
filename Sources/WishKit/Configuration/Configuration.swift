@@ -19,9 +19,6 @@ public struct Configuration {
 
     public var tabBar = TabBar()
 
-    /// Deactivates the `DetailWishView`, instead the description of the wish is expanded/shrunk by tapping on it.
-    public var showCommentSection: Bool = true
-
     public var expandDescriptionInList: Bool = false
 
     public var dropShadow: Display = .show
@@ -30,6 +27,7 @@ public struct Configuration {
 
     public var emailField: EmailField = .optional
 
+    /// Deactivates the `DetailWishView`, instead the description of the wish is expanded/shrunk by tapping on it.
     public var commentSection: Display = .show
 
     init(
