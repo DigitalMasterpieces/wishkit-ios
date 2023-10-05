@@ -123,7 +123,9 @@ struct WishView: View {
         .clipShape(RoundedRectangle(cornerRadius: WishKit.config.cornerRadius, style: .continuous))
         .wkShadow()
         .onTapGesture {
-            self.isExpanded.toggle()
+            withAnimation(.spring) {
+                self.isExpanded.toggle()
+            }
         }
     }
 
