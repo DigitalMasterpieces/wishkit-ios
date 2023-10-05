@@ -10,40 +10,6 @@ import SwiftUI
 import WishKitShared
 
 #if os(macOS)
-extension WishResponse: Identifiable { }
-
-extension View {
-    @ViewBuilder
-    func scrollContentBackgroundCompat(_ visibility: Visibility) -> some View {
-        if #available(macOS 13.0, *) {
-            self.scrollContentBackground(visibility)
-        }
-    }
-
-    @ViewBuilder
-    func scrollIndicatorsCompat(_ visibility: ScrollIndicatorVisibilityCompat) -> some View {
-        if #available(macOS 13.0, *) {
-            switch visibility {
-            case .automatic:
-                self.scrollIndicators(.automatic)
-            case .visible:
-                self.scrollIndicators(.visible)
-            case .hidden:
-                self.scrollIndicators(.hidden)
-            case .never:
-                self.scrollIndicators(.never)
-            }
-        }
-    }
-}
-
-enum ScrollIndicatorVisibilityCompat {
-    case automatic
-    case visible
-    case hidden
-    case never
-}
-
 struct WishlistView: View {
 
     @Environment(\.colorScheme)
@@ -79,22 +45,33 @@ struct WishlistView: View {
     var body: some View {
         ZStack {
 
-            List(getList(), id: \.id) { wish in
-                Button(action: { selectedWish = wish }) {
-                    WishView(wish: wish, voteCompletion: wishModel.fetchList)
-                        .padding(EdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5))
+            if wishModel.isLoading && !wishModel.hasFetched {
+                ProgressView()
+                    .imageScale(.small)
+            }
+
+            if wishModel.hasFetched && !wishModel.isLoading && getList().isEmpty {
+                Text(WishKit.config.localization.noFeatureRequests)
+            }
+
+            if getList().count > 0 {
+                List(getList(), id: \.id) { wish in
+                    Button(action: { selectedWish = wish }) {
+                        WishView(wishResponse: wish, viewKind: .list, voteActionCompletion: { wishModel.fetchList() })
+                            .padding(EdgeInsets(top: 5, leading: 5, bottom: 5, trailing: 5))
+                    }
+                    .listRowSeparatorCompat(.hidden)
+                    .buttonStyle(.plain)
                 }
-                .buttonStyle(PlainButtonStyle())
+                .transition(.opacity)
+                .scrollIndicatorsCompat(.hidden)
+                .scrollContentBackgroundCompat(.hidden)
+                .sheet(item: $selectedWish, onDismiss: { wishModel.fetchList() }) { wish in
+                    DetailWishView(wishResponse: wish, voteActionCompletion: { wishModel.fetchList() })
+                        .frame(minWidth: 500, idealWidth: 500, minHeight: 450, maxHeight: 600)
+                        .background(backgroundColor)
+                }.onAppear(perform: { wishModel.fetchList() })
             }
-            .scrollContentBackgroundCompat(.hidden)
-            .sheet(item: $selectedWish, onDismiss: { wishModel.fetchList() }) { wish in
-                DetailWishView(wish: wish, voteCompletion: wishModel.fetchList)
-                    .frame(minWidth: 400, idealWidth: 400, maxWidth: 400, minHeight: 300, maxHeight: 400)
-                    .background(backgroundColor)
-            }
-            .scrollContentBackgroundCompat(.hidden)
-            .scrollIndicatorsCompat(.hidden)
-            .onAppear(perform: wishModel.fetchList)
 
             if wishModel.shouldShowWatermark {
                 VStack {
@@ -109,14 +86,11 @@ struct WishlistView: View {
                 Spacer()
                 HStack {
                     Spacer()
-                    WKAddButton(buttonAction: createWishAction)
-                        .padding(EdgeInsets(top: 0, leading: 0, bottom: 20, trailing: 20))
+                    AddButton(buttonAction: createWishAction)
+                        .padding([.bottom, .trailing], 20)
                         .sheet(isPresented: $showingSheet) {
-                            CreateWishView(completion: {
-                                wishModel.fetchList()
-                                showingSheet = false
-                            })
-                            .frame(minWidth: 400, idealWidth: 400, maxWidth: 400, minHeight: 300, maxHeight: 400)
+                            CreateWishView(isShowing: $showingSheet, createActionCompletion: { wishModel.fetchList() })
+                                .frame(minWidth: 500, idealWidth: 500, minHeight: 400, maxHeight: 600)
                             .background(backgroundColor)
                         }
                 }
@@ -138,6 +112,12 @@ struct WishlistView: View {
             }
 
             return PrivateTheme.systemBackgroundColor.dark
+        @unknown default:
+            if let color = WishKit.theme.tertiaryColor {
+                return color.light
+            }
+
+            return PrivateTheme.systemBackgroundColor.light
         }
     }
 }

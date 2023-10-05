@@ -34,10 +34,12 @@ struct CommentFieldView: View {
 
     var body: some View {
         ZStack {
-            TextField("Write a comment..", text: $textFieldValue)
+            TextField(WishKit.config.localization.writeAComment, text: $textFieldValue)
+                .textFieldStyle(.plain)
                 .font(.footnote)
                 .padding([.top, .leading, .bottom], 15)
                 .padding([.trailing], 40)
+                .foregroundColor(textColor)
                 .background(backgroundColor)
                 .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
 
@@ -45,12 +47,14 @@ struct CommentFieldView: View {
                 Spacer()
                 if isLoading {
                     ProgressView()
+                        .controlSizeCompat(.small)
                         .padding(10)
                 } else {
                     Button(action: { Task { try await submitAction() } }) {
                         Image(systemName: "paperplane.fill")
                             .padding(10)
                     }
+                    .buttonStyle(.plain)
                     .foregroundColor(WishKit.theme.primaryColor)
                     .disabled(textFieldValue.replacingOccurrences(of: " ", with: "").isEmpty)
                 }
@@ -60,6 +64,25 @@ struct CommentFieldView: View {
 }
 
 extension CommentFieldView {
+
+    var textColor: Color {
+        switch colorScheme {
+        case .light:
+
+            if let color = WishKit.theme.textColor {
+                return color.light
+            }
+
+            return .black
+        case .dark:
+            if let color = WishKit.theme.textColor {
+                return color.dark
+            }
+
+            return .white
+        }
+    }
+
     var backgroundColor: Color {
         switch colorScheme {
         case .light:
@@ -76,22 +99,5 @@ extension CommentFieldView {
 
             return PrivateTheme.elementBackgroundColor.dark
         }
-    }
-}
-
-struct CommentFieldView_Previews: PreviewProvider {
-
-    @State
-    static var textValue = ""
-
-    @State
-    static var isLoading = false
-
-    static var previews: some View {
-        CommentFieldView(
-            $textValue,
-            isLoading: $isLoading,
-            submitAction: { print("Sending API call..") }
-        )
     }
 }

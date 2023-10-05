@@ -13,7 +13,7 @@ public struct Configuration {
     /// Hides/Shows the status badge of a wish e.g. "Approved" or "Implemented".
     public var statusBadge: Display
 
-    public var localization: Localizaton
+    public var localization: Localization
 
     public var buttons = Configuration.Buttons()
 
@@ -30,9 +30,11 @@ public struct Configuration {
 
     public var emailField: EmailField = .optional
 
+    public var commentSection: Display = .show
+
     init(
         statusBadgeDisplay: Display = .hide,
-        localization: Localizaton = .default()
+        localization: Localization = .default()
     ) {
         self.statusBadge = statusBadgeDisplay
         self.localization = localization
