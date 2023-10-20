@@ -28,6 +28,9 @@ struct CreateWishView: View {
     private var emailText = ""
 
     @State
+    private var isEmailValid = true
+
+    @State
     private var descriptionText = ""
 
     @State
@@ -96,27 +99,27 @@ struct CreateWishView: View {
                 if WishKit.config.emailField != .none {
                     VStack(spacing: 0) {
                         HStack {
-                            if WishKit.config.emailField == .optional {
-                                Text("Email (optional)")
-                                    .font(.caption2)
-                                    .padding([.leading, .trailing, .bottom], 5)
-                            }
-
-                            if WishKit.config.emailField == .required {
-                                Text("Email (required)")
-                                    .font(.caption2)
-                                    .padding([.leading, .trailing, .bottom], 5)
-                            }
-
+                            Text(WishKit.config.localization.emailAddress + (WishKit.config.emailField == .optional ? " (optional)" : ""))
+                                .font(.caption2)
+                                .padding([.leading, .trailing, .bottom], 5)
                             Spacer()
                         }
 
                         TextField("", text: $emailText)
+                            .keyboardType(.emailAddress)
                             .padding(10)
                             .textFieldStyle(.plain)
                             .foregroundColor(textColor)
                             .background(fieldBackgroundColor)
                             .clipShape(RoundedRectangle(cornerRadius: WishKit.config.cornerRadius, style: .continuous))
+                            .onReceive(Just(emailText)) { _ in handleEmailChange() }
+
+                        if !self.isEmailValid {
+                            Text(WishKit.config.localization.emailAddressShouldBeValid)
+                                .font(.caption2)
+                                .foregroundStyle(.red)
+                                .padding([.leading, .trailing, .bottom], 5)
+                        }
                     }
                 }
 
@@ -209,8 +212,19 @@ struct CreateWishView: View {
             descriptionText = String(descriptionText.prefix(descriptionLimit))
         }
 
-        // Enable/Disable button
-        isButtonDisabled = titleText.isEmpty || descriptionText.isEmpty
+        self.checkButtonStatus()
+    }
+
+    private func handleEmailChange() {
+        let emailValidationRegex = "^[\\p{L}0-9!#$%&'*+\\/=?^_`{|}~-][\\p{L}0-9.!#$%&'*+\\/=?^_`{|}~-]{0,63}@[\\p{L}0-9-]+(?:\\.[\\p{L}0-9-]{2,7})*$"
+        let emailValidationPredicate = NSPredicate(format: "SELF MATCHES %@", emailValidationRegex)
+        self.isEmailValid = emailValidationPredicate.evaluate(with: self.emailText)
+    }
+
+    /// Enable/Disable submit button
+    private func checkButtonStatus() {
+        let emailCheck = WishKit.config.emailField == .required && (emailText.isEmpty || isEmailValid)
+        isButtonDisabled = titleText.isEmpty || descriptionText.isEmpty || emailCheck
     }
 
     private func submitAction() {

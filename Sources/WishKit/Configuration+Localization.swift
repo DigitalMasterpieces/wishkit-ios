@@ -26,6 +26,8 @@ extension Configuration {
 
         public var description: String
 
+        public var emailAddress: String
+
         public var upvote: String
 
         public var info: String
@@ -55,6 +57,8 @@ extension Configuration {
         public var titleOfWish: String
 
         public var titleDescriptionCannotBeEmpty: String
+
+        public var emailAddressShouldBeValid: String
 
         public var votes: String
 
@@ -89,6 +93,7 @@ extension Configuration {
             save: String = Localization.default().save,
             title: String = Localization.default().title,
             description: String = Localization.default().description,
+            emailAddress: String = Localization.default().emailAddress,
             upvote: String = Localization.default().upvote,
             info: String = Localization.default().info,
             youCanOnlyVoteOnce: String = Localization.default().youCanOnlyVoteOnce,
@@ -104,6 +109,7 @@ extension Configuration {
             ok: String = Localization.default().ok,
             titleOfWish: String = Localization.default().titleOfWish,
             titleDescriptionCannotBeEmpty: String = Localization.default().titleDescriptionCannotBeEmpty,
+            emailAddressShouldBeValid: String = Localization.default().emailAddressShouldBeValid,
             votes: String = Localization.default().votes,
             close: String = Localization.default().close,
             createWish: String = Localization.default().createWish,
@@ -125,6 +131,7 @@ extension Configuration {
             self.save = save
             self.title = title
             self.description = description
+            self.emailAddress = emailAddress
             self.upvote = upvote
             self.info = info
             self.youCanOnlyVoteOnce = youCanOnlyVoteOnce
@@ -140,6 +147,7 @@ extension Configuration {
             self.ok = ok
             self.titleOfWish = titleOfWish
             self.titleDescriptionCannotBeEmpty = titleDescriptionCannotBeEmpty
+            self.emailAddressShouldBeValid = emailAddressShouldBeValid
             self.votes = votes
             self.close = close
             self.createWish = createWish
@@ -164,6 +172,7 @@ extension Configuration {
                 save: "Save",
                 title: "Title",
                 description: "Description",
+                emailAddress: "E-mail address",
                 upvote: "Upvote",
                 info: "Info",
                 youCanOnlyVoteOnce: "You can only vote once.",
@@ -179,6 +188,7 @@ extension Configuration {
                 ok: "Ok",
                 titleOfWish: "Title of the feature..",
                 titleDescriptionCannotBeEmpty: "Title/Description cannot be empty.",
+                emailAddressShouldBeValid: "Please enter a valid e-mail address",
                 votes: "Votes",
                 close: "Close",
                 createWish: "Create Feature",
