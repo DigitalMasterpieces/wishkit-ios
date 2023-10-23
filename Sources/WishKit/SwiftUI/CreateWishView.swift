@@ -224,20 +224,20 @@ struct CreateWishView: View {
 
     /// Enable/Disable submit button
     private func checkButtonStatus() {
-        let emailCheck = WishKit.config.emailField == .required && (emailText.isEmpty || isEmailValid)
-        isButtonDisabled = titleText.isEmpty || descriptionText.isEmpty || emailCheck
+        let emailIsNotValid = WishKit.config.emailField == .required && (emailText.isEmptyOrOnlySpaces || !isEmailValid)
+        isButtonDisabled = titleText.isEmptyOrOnlySpaces || descriptionText.isEmptyOrOnlySpaces || emailIsNotValid
     }
 
     private func submitAction() {
 
-        if WishKit.config.emailField == .required && emailText.isEmpty {
+        if WishKit.config.emailField == .required && emailText.isEmptyOrOnlySpaces {
             alertModel.alertReason = .emailRequired
             alertModel.showAlert = true
             return
         }
 
         let isInvalidEmailFormat = (emailText.count < 6 || !emailText.contains("@") || !emailText.contains("."))
-        if !emailText.isEmpty && isInvalidEmailFormat {
+        if !emailText.isEmptyOrOnlySpaces && isInvalidEmailFormat {
             alertModel.alertReason = .emailFormatWrong
             alertModel.showAlert = true
             return
@@ -332,5 +332,11 @@ extension CreateWishView {
 
             return PrivateTheme.systemBackgroundColor.light
         }
+    }
+}
+
+extension String {
+    var isEmptyOrOnlySpaces: Bool {
+        return self.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 }
