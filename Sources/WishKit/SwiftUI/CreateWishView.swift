@@ -217,27 +217,27 @@ struct CreateWishView: View {
 
     private func handleEmailChange() {
         guard !self.emailText.isEmpty else { return }
-        let emailValidationRegex = "^[\\p{L}0-9!#$%&'*+\\/=?^_`{|}~-][\\p{L}0-9.!#$%&'*+\\/=?^_`{|}~-]{0,63}@[\\p{L}0-9-]+(?:\\.[\\p{L}0-9-]{2,7})*$"
+        let emailValidationRegex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
         let emailValidationPredicate = NSPredicate(format: "SELF MATCHES %@", emailValidationRegex)
         self.isEmailValid = emailValidationPredicate.evaluate(with: self.emailText)
     }
 
     /// Enable/Disable submit button
     private func checkButtonStatus() {
-        let emailCheck = WishKit.config.emailField == .required && (emailText.isEmpty || isEmailValid)
-        isButtonDisabled = titleText.isEmpty || descriptionText.isEmpty || emailCheck
+        let emailIsNotValid = WishKit.config.emailField == .required && (emailText.isEmptyOrOnlySpaces || !isEmailValid)
+        isButtonDisabled = titleText.isEmptyOrOnlySpaces || descriptionText.isEmptyOrOnlySpaces || emailIsNotValid
     }
 
     private func submitAction() {
 
-        if WishKit.config.emailField == .required && emailText.isEmpty {
+        if WishKit.config.emailField == .required && emailText.isEmptyOrOnlySpaces {
             alertModel.alertReason = .emailRequired
             alertModel.showAlert = true
             return
         }
 
         let isInvalidEmailFormat = (emailText.count < 6 || !emailText.contains("@") || !emailText.contains("."))
-        if !emailText.isEmpty && isInvalidEmailFormat {
+        if !emailText.isEmptyOrOnlySpaces && isInvalidEmailFormat {
             alertModel.alertReason = .emailFormatWrong
             alertModel.showAlert = true
             return
@@ -332,5 +332,11 @@ extension CreateWishView {
 
             return PrivateTheme.systemBackgroundColor.light
         }
+    }
+}
+
+extension String {
+    var isEmptyOrOnlySpaces: Bool {
+        return self.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 }
