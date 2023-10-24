@@ -218,9 +218,26 @@ struct CreateWishView: View {
 
     private func handleEmailChange() {
         guard !self.emailText.isEmpty else { return }
-        let emailValidationRegex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
-        let emailValidationPredicate = NSPredicate(format: "SELF MATCHES %@", emailValidationRegex)
-        self.isEmailValid = emailValidationPredicate.evaluate(with: self.emailText)
+
+        // Perform email address validation by using Foundation’s NSDataDetector API.
+        let detector = try? NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue)
+        let range = NSRange(
+            self.emailText.startIndex..<self.emailText.endIndex,
+            in: self.emailText
+        )
+        let matches = detector?.matches(in: self.emailText, options: [], range: range)
+
+        // We only want our string to contain a single email address, so if multiple matches were found, then we fail our validation process.
+        // Verify that the found link points to an email address, and that its range covers the whole input string:
+        guard let match = matches?.first,
+              matches?.count == 1,
+              match.url?.scheme == "mailto",
+              match.range == range
+        else {
+            self.isEmailValid = false
+            return
+        }
+        self.isEmailValid = true
     }
 
     /// Enable/Disable submit button
