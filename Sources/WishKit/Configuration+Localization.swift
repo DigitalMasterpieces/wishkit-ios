@@ -26,6 +26,8 @@ extension Configuration {
 
         public var description: String
 
+        public var emailAddress: String
+
         public var upvote: String
 
         public var info: String
@@ -89,6 +91,7 @@ extension Configuration {
             save: String = Localization.default().save,
             title: String = Localization.default().title,
             description: String = Localization.default().description,
+            emailAddress: String = Localization.default().emailAddress,
             upvote: String = Localization.default().upvote,
             info: String = Localization.default().info,
             youCanOnlyVoteOnce: String = Localization.default().youCanOnlyVoteOnce,
@@ -125,6 +128,7 @@ extension Configuration {
             self.save = save
             self.title = title
             self.description = description
+            self.emailAddress = emailAddress
             self.upvote = upvote
             self.info = info
             self.youCanOnlyVoteOnce = youCanOnlyVoteOnce
@@ -164,6 +168,7 @@ extension Configuration {
                 save: "Save",
                 title: "Title",
                 description: "Description",
+                emailAddress: "E-mail address",
                 upvote: "Upvote",
                 info: "Info",
                 youCanOnlyVoteOnce: "You can only vote once.",
