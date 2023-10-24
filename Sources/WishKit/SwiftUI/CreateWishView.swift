@@ -107,17 +107,18 @@ struct CreateWishView: View {
 
                         TextField("", text: $emailText)
                             .keyboardType(.emailAddress)
+                            .textContentType(.emailAddress)
                             .padding(10)
                             .textFieldStyle(.plain)
                             .foregroundColor(textColor)
                             .background(fieldBackgroundColor)
                             .clipShape(RoundedRectangle(cornerRadius: WishKit.config.cornerRadius, style: .continuous))
-                            .onReceive(Just(emailText)) { _ in handleEmailChange() }
+                            .onChange(of: emailText) { _ in handleEmailChange() }
 
                         if !self.isEmailValid {
-                            Text(WishKit.config.localization.emailAddressShouldBeValid)
+                            Text(WishKit.config.localization.emailFormatWrongText)
                                 .font(.caption2)
-                                .foregroundStyle(.red)
+                                .foregroundColor(.red)
                                 .padding([.leading, .trailing, .bottom], 5)
                         }
                     }
