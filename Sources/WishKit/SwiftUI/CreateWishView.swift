@@ -191,7 +191,7 @@ struct CreateWishView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(backgroundColor)
-        .ignoresSafeArea(edges: [.leading, .bottom, .trailing])
+        .ignoresSafeArea(.container, edges: [.leading, .bottom, .trailing])
     }
 
     private func handleTitleAndDescriptionChange() {
