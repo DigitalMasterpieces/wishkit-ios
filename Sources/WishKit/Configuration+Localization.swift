@@ -120,7 +120,7 @@ extension Configuration {
             writeAComment: String = Localization.default().writeAComment,
             admin: String = Localization.default().admin,
             user: String = Localization.default().user,
-            noFeatureRequests: String = Localization.default().noFeatureRequests
+            noFeatureRequests: String = Localization.default().noFeatureRequests,
             wishSubmitErrorAlert: String = Localization.default().wishSubmitErrorAlert
         ) {
             self.requested = requested
