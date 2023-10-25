@@ -115,7 +115,7 @@ struct WishView: View {
                         .multilineTextAlignment(.leading)
                         .lineLimit(descriptionLineLimit)
                         // By changing the id, the view is identified as a new view and we avoid the weird text animation.
-                        .id(descriptionLineLimit)
+                        .id(wishResponse.id.uuidString + String(self.isExpanded))
                     Spacer()
                 }
             }
