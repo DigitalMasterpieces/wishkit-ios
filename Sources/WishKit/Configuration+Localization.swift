@@ -82,6 +82,8 @@ extension Configuration {
 
         public var noFeatureRequests: String
 
+        public var wishSubmitErrorAlert: String
+
         public init(
             requested: String = Localization.default().requested,
             pending: String = Localization.default().pending,
@@ -119,6 +121,7 @@ extension Configuration {
             admin: String = Localization.default().admin,
             user: String = Localization.default().user,
             noFeatureRequests: String = Localization.default().noFeatureRequests
+            wishSubmitErrorAlert: String = Localization.default().wishSubmitErrorAlert
         ) {
             self.requested = requested
             self.pending = pending
@@ -156,6 +159,7 @@ extension Configuration {
             self.admin = admin
             self.user = user
             self.noFeatureRequests = noFeatureRequests
+            self.wishSubmitErrorAlert = wishSubmitErrorAlert
         }
 
         public static func `default`() -> Localization {
@@ -195,7 +199,8 @@ extension Configuration {
                 writeAComment: "Write a comment..",
                 admin: "Admin",
                 user: "User",
-                noFeatureRequests: "No feature requests, yet ✨"
+                noFeatureRequests: "No feature requests, yet ✨",
+                wishSubmitErrorAlert: "There has been an error with the wish list."
             )
         }
     }

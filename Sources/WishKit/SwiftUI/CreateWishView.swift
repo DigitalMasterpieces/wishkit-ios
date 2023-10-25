@@ -152,12 +152,12 @@ struct CreateWishView: View {
                             message: Text(WishKit.config.localization.successfullyCreated),
                             dismissButton: button
                         )
-                    case .createReturnedError(let errorText):
+                    case .createReturnedError(_):
                         let button = Alert.Button.default(Text(WishKit.config.localization.ok))
 
                         return Alert(
                             title: Text(WishKit.config.localization.info),
-                            message: Text(errorText),
+                            message: Text(WishKit.config.localization.wishSubmitErrorAlert),
                             dismissButton: button
                         )
                     case .emailRequired:
