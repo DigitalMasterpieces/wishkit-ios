@@ -30,6 +30,9 @@ public struct Configuration {
     /// Deactivates the `DetailWishView`, instead the description of the wish is expanded/shrunk by tapping on it.
     public var commentSection: Display = .show
 
+    /// Callback when a wish was successfully submitted
+    public var onWishSubmitCallback: (() -> Void)?
+
     init(
         statusBadgeDisplay: Display = .hide,
         localization: Localization = .default()

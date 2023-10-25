@@ -268,8 +268,11 @@ struct CreateWishView: View {
             DispatchQueue.main.async {
                 switch result {
                 case .success:
-                    alertModel.alertReason = .successfullyCreated
-                    alertModel.showAlert = true
+                    // Instead of showing an alert, we propagate the event and let the application handle it itself.
+                    createActionCompletion()
+                    dismissAction()
+                    // alertModel.alertReason = .successfullyCreated
+                    // alertModel.showAlert = true
                 case .failure(let error):
                     alertModel.alertReason = .createReturnedError(error.reason.description)
                     alertModel.showAlert = true
