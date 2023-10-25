@@ -30,7 +30,7 @@ public struct Configuration {
     public var commentSection: Display = .show
 
     /// Callback when a wish was successfully submitted
-    public var onSuccessCallback: (() -> Void)?
+    public var onWishSubmitCallback: (() -> Void)?
 
     init(
         statusBadgeDisplay: Display = .hide,

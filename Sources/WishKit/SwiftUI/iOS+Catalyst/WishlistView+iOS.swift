@@ -129,7 +129,7 @@ struct WishlistViewIOS: View {
                         NavigationLink(
                             destination: {
                                 CreateWishView(createActionCompletion: {
-                                    WishKit.config.onSuccessCallback?()
+                                    WishKit.config.onWishSubmitCallback?()
                                     wishModel.fetchList()
                                 })
                             }, label: {
