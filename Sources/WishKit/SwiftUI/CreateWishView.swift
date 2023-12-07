@@ -98,9 +98,17 @@ struct CreateWishView: View {
                 if WishKit.config.emailField != .none {
                     VStack(spacing: 0) {
                         HStack {
-                            Text(WishKit.config.localization.emailAddress + (WishKit.config.emailField == .optional ? " (optional)" : ""))
-                                .font(.caption2)
-                                .padding([.leading, .trailing, .bottom], 5)
+                            if WishKit.config.emailField == .optional {
+                                Text(WishKit.config.localization.emailOptional)
+                                    .font(.caption2)
+                                    .padding([.leading, .trailing, .bottom], 5)
+                            }
+
+                            if WishKit.config.emailField == .required {
+                                Text(WishKit.config.localization.emailRequired)
+                                    .font(.caption2)
+                                    .padding([.leading, .trailing, .bottom], 5)
+                            }
                             Spacer()
                         }
 
@@ -196,6 +204,7 @@ struct CreateWishView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(backgroundColor)
         .ignoresSafeArea(.container, edges: [.leading, .bottom, .trailing])
+        .toolbarKeyboardDoneButton()
     }
 
     private func handleTitleAndDescriptionChange() {
