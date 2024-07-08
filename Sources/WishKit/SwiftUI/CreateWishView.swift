@@ -31,6 +31,9 @@ struct CreateWishView: View {
     private var emailText = ""
 
     @State
+    private var isEmailValid = true
+
+    @State
     private var descriptionText = ""
 
     @State
@@ -124,10 +127,20 @@ struct CreateWishView: View {
 
                             TextField("", text: $emailText)
                                 .padding(10)
+                                .keyboardType(.emailAddress)
+                                .textContentType(.emailAddress)
                                 .textFieldStyle(.plain)
                                 .foregroundColor(textColor)
                                 .background(fieldBackgroundColor)
                                 .clipShape(RoundedRectangle(cornerRadius: WishKit.config.cornerRadius, style: .continuous))
+                                .onChange(of: emailText) { _ in handleEmailChange() }
+
+                            if !self.isEmailValid {
+                                Text(WishKit.config.localization.emailFormatWrongText)
+                                    .font(.caption2)
+                                    .foregroundColor(.red)
+                                    .padding([.leading, .trailing, .bottom], 5)
+                            }
                         }
                     }
 
@@ -239,19 +252,49 @@ struct CreateWishView: View {
         }
 
         // Enable/Disable button
-        isButtonDisabled = titleText.isEmpty || descriptionText.isEmpty
+        self.checkButtonStatus()
+    }
+
+    private func handleEmailChange() {
+        guard !self.emailText.isEmpty else { return }
+
+        // Perform email address validation by using Foundation’s NSDataDetector API.
+        let detector = try? NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue)
+        let range = NSRange(
+            self.emailText.startIndex..<self.emailText.endIndex,
+            in: self.emailText
+        )
+        let matches = detector?.matches(in: self.emailText, options: [], range: range)
+
+        // We only want our string to contain a single email address, so if multiple matches were found, then we fail our validation process.
+        // Verify that the found link points to an email address, and that its range covers the whole input string:
+        guard let match = matches?.first,
+              matches?.count == 1,
+              match.url?.scheme == "mailto",
+              match.range == range
+        else {
+            self.isEmailValid = false
+            return
+        }
+        self.isEmailValid = true
+    }
+
+    /// Enable/Disable submit button
+    private func checkButtonStatus() {
+        let emailIsNotValid = WishKit.config.emailField == .required && (emailText.isEmptyOrOnlySpaces || !isEmailValid)
+        isButtonDisabled = titleText.isEmptyOrOnlySpaces || descriptionText.isEmptyOrOnlySpaces || emailIsNotValid
     }
 
     private func submitAction() {
 
-        if WishKit.config.emailField == .required && emailText.isEmpty {
+        if WishKit.config.emailField == .required && emailText.isEmptyOrOnlySpaces {
             alertModel.alertReason = .emailRequired
             alertModel.showAlert = true
             return
         }
 
         let isInvalidEmailFormat = (emailText.count < 6 || !emailText.contains("@") || !emailText.contains("."))
-        if !emailText.isEmpty && isInvalidEmailFormat {
+        if !emailText.isEmptyOrOnlySpaces && isInvalidEmailFormat {
             alertModel.alertReason = .emailFormatWrong
             alertModel.showAlert = true
             return
@@ -267,6 +310,10 @@ struct CreateWishView: View {
                 case .success:
                     alertModel.alertReason = .successfullyCreated
                     alertModel.showAlert = true
+                    // This is called after the alert is dismissed.
+                    // Since we are not using the alert, this has to be called here.
+                    createActionCompletion()
+                    dismissAction()
                 case .failure(let error):
                     alertModel.alertReason = .createReturnedError(error.reason.description)
                     alertModel.showAlert = true
@@ -368,5 +415,11 @@ extension CreateWishView {
 
             return PrivateTheme.systemBackgroundColor.light
         }
+    }
+}
+
+extension String {
+    var isEmptyOrOnlySpaces: Bool {
+        return self.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 }
