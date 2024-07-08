@@ -128,7 +128,10 @@ struct WishlistViewIOS: View {
                     VStack {
                         NavigationLink(
                             destination: {
-                                CreateWishView(createActionCompletion: { wishModel.fetchList() })
+                                CreateWishView(createActionCompletion: {
+                                    WishKit.config.onWishSubmitCallback?()
+                                    wishModel.fetchList()
+                                })
                             }, label: {
                                 AddButton(size: CGSize(width: 60, height: 60))
                             }
