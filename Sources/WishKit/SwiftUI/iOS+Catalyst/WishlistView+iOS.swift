@@ -130,18 +130,20 @@ struct WishlistViewIOS: View {
                 Spacer()
 
                 VStack(alignment: .trailing) {
-                    Spacer()
                     VStack {
-                        NavigationLink(
-                            destination: {
-                                CreateWishView(createActionCompletion: {
-                                    WishKit.config.onWishSubmitCallback?()
-                                    wishModel.fetchList()
-                                })
-                            }, label: {
-                                AddButton(size: CGSize(width: 60, height: 60))
-                            }
-                        )
+                        Spacer()
+                        if WishKit.config.buttons.addButton.display == .show {
+                            NavigationLink(
+                                destination: {
+                                    CreateWishView(createActionCompletion: {
+                                        WishKit.config.onWishSubmitCallback?()
+                                        wishModel.fetchList()
+                                    })
+                                }, label: {
+                                    AddButton(size: CGSize(width: 60, height: 60))
+                                }
+                            )
+                        }
                     }.padding(.bottom, addButtonBottomPadding)
                 }.padding(.trailing, 20)
             }.frame(maxWidth: 700)

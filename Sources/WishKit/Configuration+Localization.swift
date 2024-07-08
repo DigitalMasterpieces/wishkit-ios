@@ -88,6 +88,8 @@ extension Configuration {
 
         public var emailRequired: String
 
+        public var discardEnteredInformation: String
+
         public init(
             requested: String = Localization.default().requested,
             pending: String = Localization.default().pending,
@@ -127,7 +129,8 @@ extension Configuration {
             noFeatureRequests: String = Localization.default().noFeatureRequests,
             wishSubmitErrorAlert: String = Localization.default().wishSubmitErrorAlert,
             emailOptional: String = Localization.default().emailOptional,
-            emailRequired: String = Localization.default().emailRequired
+            emailRequired: String = Localization.default().emailRequired,
+            discardEnteredInformation: String = Localization.default().discardEnteredInformation
         ) {
             self.requested = requested
             self.pending = pending
@@ -168,6 +171,7 @@ extension Configuration {
             self.wishSubmitErrorAlert = wishSubmitErrorAlert
             self.emailOptional = emailOptional
             self.emailRequired = emailRequired
+            self.discardEnteredInformation = discardEnteredInformation
         }
 
         public static func `default`() -> Localization {
@@ -210,7 +214,8 @@ extension Configuration {
                 noFeatureRequests: "No feature requests, yet ✨",
                 wishSubmitErrorAlert: "There has been an error with the wish list.",
                 emailOptional: "Email (optional)",
-                emailRequired: "Email (required)"
+                emailRequired: "Email (required)",
+                discardEnteredInformation: "Discard entered information?"
             )
         }
     }
