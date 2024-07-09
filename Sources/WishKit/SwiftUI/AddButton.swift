@@ -31,24 +31,15 @@ struct AddButton: View {
                 Image(systemName: "plus")
                     .frame(width: size.width, height: size.height)
                     .foregroundColor(addButtonTextColor)
-                    .background(WishKit.theme.primaryColor)
-                    .clipShape(.circle)
             }
             .buttonStyle(.plain)
-            .buttonStyle(.roundButtonStyle)
             .frame(width: size.width, height: size.height)
-            .background(WishKit.theme.primaryColor)
-            .clipShape(.circle)
-            .shadow(color: .black.opacity(0.33), radius: 5, x: 0, y: 5)
         #else
             VStack {
                 Image(systemName: "plus")
                     .foregroundColor(addButtonTextColor)
             }
             .frame(width: size.width, height: size.height)
-            .background(WishKit.theme.primaryColor)
-            .clipShape(.circle)
-            .shadow(color: .black.opacity(1/4), radius: 3, x: 0, y: 3)
         #endif
     }
 
@@ -71,6 +62,9 @@ struct RoundButtonStyle: ButtonStyle {
             .label
             .foregroundColor(configuration.isPressed ? .white.opacity(0.66) : .white)
             .background(WishKit.theme.primaryColor)
+            .brightness(configuration.isPressed ? 0.1 : 0.0)
+            .clipShape(.circle)
+            .shadow(color: .black.opacity(1/4), radius: 3, x: 0, y: 3)
     }
 }
 

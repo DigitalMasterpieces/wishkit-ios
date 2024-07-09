@@ -140,9 +140,9 @@ struct WishlistViewIOS: View {
                                         wishModel.fetchList()
                                     })
                                 }, label: {
-                                    AddButton(size: CGSize(width: 60, height: 60))
+                                    AddButton()
                                 }
-                            )
+                            ).buttonStyle(.roundButtonStyle)
                         }
                     }.padding(.bottom, addButtonBottomPadding)
                 }.padding(.trailing, 20)
