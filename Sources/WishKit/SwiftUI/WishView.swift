@@ -60,7 +60,7 @@ struct WishView: View {
                         .imageScale(.medium)
                         .foregroundColor(arrowColor)
                     Text(String(describing: voteCount))
-                        .font(.system(size: 17))
+                        .font(.headline)
                         .foregroundColor(textColor)
                         .frame(width: 35)
                 }
@@ -90,8 +90,7 @@ struct WishView: View {
                 HStack {
                     Text(wishResponse.title)
                         .foregroundColor(textColor)
-                        .font(.system(size: 17))
-                        .fontWeight(.semibold)
+                        .font(.headline)
                         .multilineTextAlignment(.leading)
                         .lineLimit(viewKind == .list ? 1 : nil)
 
@@ -111,7 +110,6 @@ struct WishView: View {
                 HStack {
                     Text(wishResponse.description)
                         .foregroundColor(textColor)
-                        .font(.system(size: 13))
                         .multilineTextAlignment(.leading)
                         .lineLimit(descriptionLineLimit)
                         // By changing the id, the view is identified as a new view and we avoid the weird text animation.
