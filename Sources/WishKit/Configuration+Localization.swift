@@ -18,6 +18,14 @@ extension Configuration {
 
         public var implemented: String
 
+        public var inReview: String
+
+        public var planned: String
+
+        public var inProgress: String
+
+        public var completed: String
+
         public var wishlist: String
 
         public var save: String
@@ -87,12 +95,22 @@ extension Configuration {
         public var emailRequired: String
 
         public var discardEnteredInformation: String
+        
+        public var addButtonInNavigationBar: String
+
+        public var refresh: String
+
+        public var refreshing: String
 
         public init(
             requested: String = Localization.default().requested,
             pending: String = Localization.default().pending,
             approved: String = Localization.default().approved,
             implemented: String = Localization.default().implemented,
+            inReview: String = Localization.default().inReview,
+            planned: String = Localization.default().planned,
+            inProgress: String = Localization.default().inProgress,
+            completed: String = Localization.default().completed,
             wishlist: String = Localization.default().wishlist,
             save: String = Localization.default().save,
             title: String = Localization.default().title,
@@ -127,12 +145,19 @@ extension Configuration {
             wishSubmitErrorAlert: String = Localization.default().wishSubmitErrorAlert,
             emailOptional: String = Localization.default().emailOptional,
             emailRequired: String = Localization.default().emailRequired,
-            discardEnteredInformation: String = Localization.default().discardEnteredInformation
+            discardEnteredInformation: String = Localization.default().discardEnteredInformation,
+            addButtonInNavigationBar: String = Localization.default().addButtonInNavigationBar,
+            refresh: String = Localization.default().refresh,
+            refreshing: String = Localization.default().refreshing
         ) {
             self.requested = requested
             self.pending = pending
             self.approved = approved
             self.implemented = implemented
+            self.inReview = inReview
+            self.planned = planned
+            self.inProgress = inProgress
+            self.completed = completed
             self.wishlist = wishlist
             self.save = save
             self.title = title
@@ -168,14 +193,21 @@ extension Configuration {
             self.emailOptional = emailOptional
             self.emailRequired = emailRequired
             self.discardEnteredInformation = discardEnteredInformation
+            self.addButtonInNavigationBar = addButtonInNavigationBar
+            self.refresh = refresh
+            self.refreshing = refreshing
         }
 
         public static func `default`() -> Localization {
             Localization(
                 requested: "Requested",
                 pending: "Pending",
-                approved: "Approved",
-                implemented: "Implemented",
+                approved: "In Review",
+                implemented: "Completed",
+                inReview: "In Review",
+                planned: "Planned",
+                inProgress: "In Progress",
+                completed: "Completed",
                 wishlist: "Feature Requests",
                 save: "Save",
                 title: "Title",
@@ -210,7 +242,10 @@ extension Configuration {
                 wishSubmitErrorAlert: "There has been an error with the wish list.",
                 emailOptional: "Email (optional)",
                 emailRequired: "Email (required)",
-                discardEnteredInformation: "Discard entered information?"
+                discardEnteredInformation: "Discard entered information?",
+                addButtonInNavigationBar: "Create",
+                refresh: "Refresh",
+                refreshing: "Refreshing.."
             )
         }
     }

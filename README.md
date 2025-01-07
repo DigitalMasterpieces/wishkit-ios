@@ -27,7 +27,7 @@ WishKit allows your users to request and vote on features in your app that <b>ju
 
 # UIKit
 
-## 1. Add WishKit (v4.0.0) as a dependency in Xcode.
+## 1. Add WishKit (v4.7.0) as a dependency in Xcode.
 ```
 https://github.com/wishkit/wishkit-ios.git
 ```
@@ -68,7 +68,7 @@ class HomeViewController: UIViewController {
 
 # SwiftUI
 
-## 1. Add WishKit (v4.0.0) as a dependency in Xcode.
+## 1. Add WishKit (v4.7.0) as a dependency in Xcode.
 ```
 https://github.com/wishkit/wishkit-ios.git
 ```
@@ -101,7 +101,7 @@ struct ContentView: View {
     }
 
     var body: some View {
-        WishKit.view.withNavigation()
+        WishKit.FeedbackListView().withNavigation()
     }
 }
 ```
@@ -113,23 +113,26 @@ struct ContentView: View {
 #### You can configure a lof of WishKit's UI elements.
 
 ```swift
-// Show the status badge of a feature request (e.g. pending, approved, etc.).
-WishKit.config.statusBadge = .show
+// Allow user to undo their vote
+WishKit.config.allowUndoVote = true
 
 // Shows full description of a feature request in the list.
 WishKit.config.expandDescriptionInList = true
-
-// Hide the segmented control.
-WishKit.config.buttons.segmentedControl.display = .hide
-
-// Remove drop shadow.
-WishKit.config.dropShadow = .hide
 
 // Hide comment section
 WishKit.config.commentSection = .hide
 
 // Position the Add-Button.
 WishKit.config.buttons.addButton.bottomPadding = .large
+
+// Show the status badge of a feature request (e.g. pending, approved, etc.).
+WishKit.config.statusBadge = .show
+
+// Hide the segmented control.
+WishKit.config.buttons.segmentedControl.display = .hide
+
+// Remove drop shadow.
+WishKit.config.dropShadow = .hide
 
 ```
 

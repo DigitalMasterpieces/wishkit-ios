@@ -25,16 +25,27 @@ struct WishlistView: View {
     var selectedWish: WishResponse? = nil
 
     @Binding
-    var listType: WishState
+    var selectedWishState: LocalWishState
 
     func getList() -> [WishResponse] {
-        switch listType {
-        case .approved:
-            return wishModel.approvedWishlist
-        case .implemented:
-            return wishModel.implementedWishlist
-        default:
-            return []
+        switch selectedWishState {
+        case .all:
+            return wishModel.all
+        case .library(let state):
+            switch state {
+            case .pending:
+                return wishModel.pendingList
+            case .inReview, .approved:
+                return wishModel.inReviewList
+            case .planned:
+                return wishModel.plannedList
+            case .inProgress:
+                return wishModel.inProgressList
+            case .completed, .implemented:
+                return wishModel.completedList
+            case .rejected:
+                return []
+            }
         }
     }
 
@@ -92,16 +103,18 @@ struct WishlistView: View {
                 Spacer()
                 HStack {
                     Spacer()
-                    AddButton(buttonAction: createWishAction)
-                        .padding([.bottom, .trailing], 20)
-                        .sheet(isPresented: $showingCreateSheet) {
-                            CreateWishView(
-                                createActionCompletion: { wishModel.fetchList() },
-                                closeAction: { self.showingCreateSheet = false }
-                            )
+                    if WishKit.config.buttons.addButton.location == .floating {
+                        AddButton(buttonAction: createWishAction)
+                            .padding([.bottom, .trailing], 20)
+                            .sheet(isPresented: $showingCreateSheet) {
+                                CreateWishView(
+                                    createActionCompletion: { wishModel.fetchList() },
+                                    closeAction: { self.showingCreateSheet = false }
+                                )
                                 .frame(minWidth: 500, idealWidth: 500, minHeight: 400, maxHeight: 600)
                                 .background(backgroundColor)
-                        }
+                            }
+                    }
                 }
             }
         }

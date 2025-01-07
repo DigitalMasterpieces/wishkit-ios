@@ -22,13 +22,33 @@ extension View {
     }
 }
 
+enum LocalWishState: Hashable, Identifiable {
+    case all
+    case library(WishState)
+
+    var id: String { description }
+
+    var description: String {
+        switch self {
+        case .all:
+            return "All"
+        case .library(let wishState):
+            return wishState.description
+        }
+    }
+
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(description)
+    }
+}
+
 struct WishlistViewIOS: View {
 
     @Environment(\.colorScheme)
     private var colorScheme
 
     @State
-    private var selectedWishState: WishState = .approved
+    private var selectedWishState: LocalWishState = .all
 
     @ObservedObject
     var wishModel: WishModel
@@ -66,14 +86,58 @@ struct WishlistViewIOS: View {
         }
     }
 
+    private var feedbackStateSelection: [LocalWishState] {
+        return [
+            .all,
+            .library(.pending),
+            .library(.inReview),
+            .library(.planned),
+            .library(.inProgress),
+            .library(.completed),
+        ]
+    }
+
     private func getList() -> [WishResponse] {
         switch selectedWishState {
-        case .approved:
-            return wishModel.approvedWishlist
-        case .implemented:
-            return wishModel.implementedWishlist
-        default:
-            return []
+        case .all:
+            return wishModel.all
+        case .library(let state):
+            switch state {
+            case .pending:
+                return wishModel.pendingList
+            case .inReview, .approved:
+                return wishModel.inReviewList
+            case .planned:
+                return wishModel.plannedList
+            case .inProgress:
+                return wishModel.inProgressList
+            case .completed, .implemented:
+                return wishModel.completedList
+            case .rejected:
+                return []
+            }
+        }
+    }
+
+    private func getCountFor(state: LocalWishState) -> Int {
+        switch state {
+        case .all:
+            return wishModel.all.count
+        case .library(let wishState):
+            switch wishState {
+            case .pending:
+                return wishModel.pendingList.count
+            case .inReview, .approved:
+                return wishModel.inReviewList.count
+            case .planned:
+                return wishModel.plannedList.count
+            case .inProgress:
+                return wishModel.inProgressList.count
+            case .completed, .implemented:
+                return wishModel.completedList.count
+            case .rejected:
+                return 0
+            }
         }
     }
 
@@ -86,7 +150,7 @@ struct WishlistViewIOS: View {
             }
 
             if wishModel.hasFetched && !wishModel.isLoading && getList().isEmpty {
-                Text(WishKit.config.localization.noFeatureRequests)
+                Text("\(selectedWishState.description): \(WishKit.config.localization.noFeatureRequests)")
             }
 
             ScrollView {
@@ -95,8 +159,12 @@ struct WishlistViewIOS: View {
                     if WishKit.config.buttons.segmentedControl.display == .show {
                         Spacer(minLength: 15)
 
-                        SegmentedView(selectedWishState: $selectedWishState)
-                            .frame(maxWidth: 200)
+                        Picker("", selection: $selectedWishState) {
+                            ForEach(feedbackStateSelection, id: \.self) { state in
+                                Text("\(state.description) (\(getCountFor(state: state)))")
+                                    .tag(state)
+                            }
+                        }
                     }
 
                     Spacer(minLength: 15)
@@ -125,28 +193,30 @@ struct WishlistViewIOS: View {
             .refreshableCompat(action: { await wishModel.fetchList() })
             .padding([.leading, .bottom, .trailing])
 
-
-            HStack {
-                Spacer()
-
-                VStack(alignment: .trailing) {
-                    VStack {
-                        Spacer()
-                        if WishKit.config.buttons.addButton.display == .show {
-                            NavigationLink(
-                                destination: {
-                                    CreateWishView(createActionCompletion: {
-                                        WishKit.config.onWishSubmitCallback?()
-                                        wishModel.fetchList()
-                                    })
-                                }, label: {
-                                    AddButton()
-                                }
-                            ).buttonStyle(.roundButtonStyle)
-                        }
-                    }.padding(.bottom, addButtonBottomPadding)
-                }.padding(.trailing, 20)
-            }.frame(maxWidth: 700)
+            if WishKit.config.buttons.addButton.location == .floating {
+                HStack {
+                    Spacer()
+                    
+                    VStack(alignment: .trailing) {
+                        VStack {
+                            Spacer()
+                            
+                            if WishKit.config.buttons.addButton.display == .show {
+                                NavigationLink(
+                                    destination: {
+                                        CreateWishView(createActionCompletion: {
+                                            WishKit.config.onWishSubmitCallback?()
+                                            wishModel.fetchList()
+                                        })
+                                    }, label: {
+                                        AddButton()
+                                    }
+                                ).buttonStyle(.roundButtonStyle)
+                            }
+                        }.padding(.bottom, addButtonBottomPadding)
+                    }.padding(.trailing, 20)
+                }.frame(maxWidth: 700)
+            }
         }
         .frame(maxWidth: .infinity)
         .background(backgroundColor)
@@ -164,6 +234,16 @@ struct WishlistViewIOS: View {
                     Button(WishKit.config.localization.done) {
                         UIApplication.shared.windows.first(where: \.isKeyWindow)?.rootViewController?.dismiss(animated: true)
                     }
+                }
+                
+                if WishKit.config.buttons.addButton.location == .navigationBar {
+                    NavigationLink(
+                        destination: {
+                            CreateWishView(createActionCompletion: { wishModel.fetchList() })
+                        }, label: {
+                            Text(WishKit.config.localization.addButtonInNavigationBar)
+                        }
+                    )
                 }
             }
         }.onAppear(perform: wishModel.fetchList)

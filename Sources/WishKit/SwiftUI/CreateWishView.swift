@@ -63,6 +63,16 @@ struct CreateWishView: View {
                 HStack {
                     Spacer()
                     CloseButton(closeAction: dismissViewAction)
+                        .alert(isPresented: $showConfirmationAlert) {
+                            let button = Alert.Button.default(Text(WishKit.config.localization.ok), action: crossPlatformDismiss)
+                            
+                            return Alert(
+                                title: Text(WishKit.config.localization.info),
+                                message: Text(WishKit.config.localization.discardEnteredInformation),
+                                primaryButton: button,
+                                secondaryButton: .cancel()
+                            )
+                        }
                 }
             }
 
@@ -207,14 +217,6 @@ struct CreateWishView: View {
 
                     }
                 }
-                .alert(isPresented: $showConfirmationAlert) {
-                    let button = Alert.Button.default(Text(WishKit.config.localization.ok), action: crossPlatformDismiss)
-                    return Alert(
-                        title: Text(WishKit.config.localization.info),
-                        message: Text(WishKit.config.localization.discardEnteredInformation),
-                        dismissButton: button
-                    )
-                }
                 .frame(maxWidth: 700)
                 .padding()
 
@@ -334,7 +336,7 @@ struct CreateWishView: View {
         #if os(macOS) || os(visionOS)
         closeAction?()
         #else
-        dismissViewAction()
+        dismissAction()
         #endif
     }
 

@@ -23,11 +23,8 @@ struct WishView: View {
     @ObservedObject
     private var alertModel = AlertModel()
 
-    @State
-    private var voteCount = 0
-
-    @State
-    private var hasVoted = false
+    @Binding
+    private var voteCount: Int
 
     private let wishResponse: WishResponse
 
@@ -49,7 +46,7 @@ struct WishView: View {
         self.wishResponse = wishResponse
         self.viewKind = viewKind
         self.voteActionCompletion = voteActionCompletion
-        self._voteCount = State(wrappedValue: wishResponse.votingUsers.count)
+        self._voteCount = .constant(wishResponse.votingUsers.count)
     }
 
     var body: some View {
@@ -131,15 +128,6 @@ struct WishView: View {
 
     func badgeColor(for wishState: WishState) -> Color {
         switch wishState {
-        case .pending:
-            switch colorScheme {
-            case .light:
-                return WishKit.theme.badgeColor.pending.light
-            case .dark:
-                return WishKit.theme.badgeColor.pending.dark
-            @unknown default:
-                return WishKit.theme.badgeColor.pending.light
-            }
         case .approved:
             switch colorScheme {
             case .light:
@@ -158,6 +146,53 @@ struct WishView: View {
             @unknown default:
                 return WishKit.theme.badgeColor.implemented.light
             }
+
+        case .pending:
+            switch colorScheme {
+            case .light:
+                return WishKit.theme.badgeColor.pending.light
+            case .dark:
+                return WishKit.theme.badgeColor.pending.dark
+            @unknown default:
+                return WishKit.theme.badgeColor.pending.light
+            }
+        case .inReview:
+            switch colorScheme {
+            case .light:
+                return WishKit.theme.badgeColor.inReview.light
+            case .dark:
+                return WishKit.theme.badgeColor.inReview.dark
+            @unknown default:
+                return WishKit.theme.badgeColor.inReview.light
+            }
+        case .planned:
+            switch colorScheme {
+            case .light:
+                return WishKit.theme.badgeColor.planned.light
+            case .dark:
+                return WishKit.theme.badgeColor.planned.dark
+            @unknown default:
+                return WishKit.theme.badgeColor.planned.light
+            }
+        case .inProgress:
+            switch colorScheme {
+            case .light:
+                return WishKit.theme.badgeColor.inProgress.light
+            case .dark:
+                return WishKit.theme.badgeColor.inProgress.dark
+            @unknown default:
+                return WishKit.theme.badgeColor.inProgress.light
+            }
+
+        case .completed:
+            switch colorScheme {
+            case .light:
+                return WishKit.theme.badgeColor.completed.light
+            case .dark:
+                return WishKit.theme.badgeColor.completed.dark
+            @unknown default:
+                return WishKit.theme.badgeColor.completed.light
+            }
         case .rejected:
             switch colorScheme {
             case .light:
@@ -167,30 +202,33 @@ struct WishView: View {
             @unknown default:
                 return WishKit.theme.badgeColor.rejected.light
             }
+        default:
+            return .black
         }
     }
 
     private func voteAction() {
-        let userUUID = UUIDManager.getUUID()
-
         if wishResponse.state == .implemented {
             alertModel.alertReason = .alreadyImplemented
             alertModel.showAlert = true
             return
         }
-
-        if wishResponse.votingUsers.contains(where: { user in user.uuid == userUUID }) || hasVoted {
+        
+        let userUUID = UUIDManager.getUUID()
+        
+        let hasVoted = wishResponse.votingUsers.contains(where: { user in user.uuid == userUUID })
+        
+        if (hasVoted) && WishKit.config.allowUndoVote == false {
             alertModel.alertReason = .alreadyVoted
             alertModel.showAlert = true
             return
         }
 
         let request = VoteWishRequest(wishId: wishResponse.id)
+        
         WishApi.voteWish(voteRequest: request) { result in
             switch result {
             case .success:
-                voteCount += 1
-                hasVoted = true
                 DispatchQueue.main.async {
                     voteActionCompletion()
                 }
@@ -207,7 +245,7 @@ struct WishView: View {
 extension WishView {
     var arrowColor: Color {
         let userUUID = UUIDManager.getUUID()
-        if wishResponse.votingUsers.contains(where: { user in user.uuid == userUUID }) || hasVoted {
+        if wishResponse.votingUsers.contains(where: { user in user.uuid == userUUID }) {
             return WishKit.theme.primaryColor
         }
 
@@ -216,6 +254,8 @@ extension WishView {
             return WishKit.config.buttons.voteButton.arrowColor.light
         case .dark:
             return WishKit.config.buttons.voteButton.arrowColor.dark
+        @unknown default:
+            return WishKit.config.buttons.voteButton.arrowColor.light
         }
     }
 
@@ -234,6 +274,12 @@ extension WishView {
             }
 
             return .white
+        @unknown default:
+            if let color = WishKit.theme.textColor {
+                return color.light
+            }
+
+            return .black
         }
     }
 
@@ -252,6 +298,12 @@ extension WishView {
             }
 
             return PrivateTheme.elementBackgroundColor.dark
+        @unknown default:
+            if let color = WishKit.theme.secondaryColor {
+                return color.light
+            }
+
+            return PrivateTheme.elementBackgroundColor.light
         }
     }
 }
