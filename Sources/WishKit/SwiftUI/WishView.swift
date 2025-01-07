@@ -59,7 +59,7 @@ struct WishView: View {
                     Text(String(describing: voteCount))
                         .font(.headline)
                         .foregroundColor(textColor)
-                        .frame(width: 35)
+                        .frame(width: 45)
                 }
                 .padding([.leading, .trailing], 12)
                 .cornerRadius(12)
