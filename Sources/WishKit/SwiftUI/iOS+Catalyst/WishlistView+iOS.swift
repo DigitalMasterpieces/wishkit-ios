@@ -48,7 +48,7 @@ struct WishlistViewIOS: View {
     private var colorScheme
 
     @State
-    private var selectedWishState: LocalWishState = .all
+    private var selectedWishState: LocalWishState = .library(.inReview)
 
     @ObservedObject
     var wishModel: WishModel
