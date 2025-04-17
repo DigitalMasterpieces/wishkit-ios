@@ -37,8 +37,10 @@ struct WishView: View {
             return nil
         }
         
-        return WishKit.config.expandDescriptionInList ? nil : 1
+        return self.isExpanded ? nil : 1
     }
+
+    @State private var isExpanded = WishKit.config.expandDescriptionInList
 
     init(wishResponse: WishResponse, viewKind: ViewKind, voteActionCompletion: @escaping (() -> Void)) {
         self.wishResponse = wishResponse
@@ -109,6 +111,8 @@ struct WishView: View {
                         .font(.system(size: 13))
                         .multilineTextAlignment(.leading)
                         .lineLimit(descriptionLineLimit)
+                        // By changing the id, the view is identified as a new view and we avoid the weird text animation.
+                        .id(wishResponse.id.uuidString + String(self.isExpanded))
                     Spacer()
                 }
             }
@@ -117,6 +121,11 @@ struct WishView: View {
         .background(backgroundColor)
         .clipShape(RoundedRectangle(cornerRadius: WishKit.config.cornerRadius, style: .continuous))
         .wkShadow()
+        .onTapGesture {
+            withAnimation(.spring) {
+                self.isExpanded.toggle()
+            }
+        }
     }
 
     func badgeColor(for wishState: WishState) -> Color {
