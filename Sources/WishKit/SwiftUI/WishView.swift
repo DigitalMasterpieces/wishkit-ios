@@ -9,6 +9,14 @@
 import SwiftUI
 import WishKitShared
 
+#if canImport(UIKit)
+import UIKit
+#endif
+
+#if canImport(AppKit)
+import AppKit
+#endif
+
 struct WishView: View {
 
     // Helps differentiate where this view is used (in the list or in detail view).
@@ -53,7 +61,8 @@ struct WishView: View {
         HStack(spacing: 0) {
             Button(action: voteAction) {
                 VStack(spacing: 5) {
-                    Image(systemName: "arrowtriangle.up.fill")
+                    upvoteIconImage
+//                        .renderingMode(.template)
                         .imageScale(.medium)
                         .foregroundColor(arrowColor)
                     Text(String(describing: voteCount))
@@ -202,8 +211,6 @@ struct WishView: View {
             @unknown default:
                 return WishKit.theme.badgeColor.rejected.light
             }
-        default:
-            return .black
         }
     }
 
@@ -227,14 +234,14 @@ struct WishView: View {
         let request = VoteWishRequest(wishId: wishResponse.id)
         
         WishApi.voteWish(voteRequest: request) { result in
-            switch result {
-            case .success:
-                DispatchQueue.main.async {
+            Task { @MainActor in
+                switch result {
+                case .success:
                     voteActionCompletion()
+                case .failure(let error):
+                    alertModel.alertReason = .voteReturnedError(error.localizedDescription)
+                    alertModel.showAlert = true
                 }
-            case .failure(let error):
-                alertModel.alertReason = .voteReturnedError(error.localizedDescription)
-                alertModel.showAlert = true
             }
         }
     }
@@ -243,6 +250,53 @@ struct WishView: View {
 // MARK: - Darkmode
 
 extension WishView {
+    private static let thumbsUpSystemName = "hand.thumbsup.fill"
+
+    private static let arrowUpvoteSystemName = "arrowtriangle.up.fill"
+
+    var upvoteIconImage: Image {
+        switch WishKit.config.buttons.voteButton.icon {
+        case .systemName(let symbolName):
+            let trimmedSymbolName = symbolName.trimmingCharacters(in: .whitespacesAndNewlines)
+
+            guard !trimmedSymbolName.isEmpty else {
+                return fallbackUpvoteImage(reason: "Received empty upvote symbol name.")
+            }
+
+            guard isValidSystemSymbolName(trimmedSymbolName) else {
+                return fallbackUpvoteImage(reason: "Received invalid SF Symbol '\(trimmedSymbolName)'.")
+            }
+
+            return Image(systemName: trimmedSymbolName).renderingMode(.template)
+        case .thumbsUpIcon:
+            return Image(systemName: Self.thumbsUpSystemName).renderingMode(.template)
+        case .arrowUpvoteIcon:
+            return Image(systemName: Self.arrowUpvoteSystemName).renderingMode(.template)
+        }
+    }
+
+    private func fallbackUpvoteImage(reason: String) -> Image {
+        printDebug(
+            WishView.self,
+            "Falling back to .arrowUpvoteIcon (\(Self.arrowUpvoteSystemName)). Reason: \(reason)"
+        )
+
+        return Image(systemName: Self.arrowUpvoteSystemName)
+    }
+
+    private func isValidSystemSymbolName(_ symbolName: String) -> Bool {
+        #if canImport(UIKit)
+        return UIImage(systemName: symbolName) != nil
+        #elseif canImport(AppKit)
+        return NSImage(
+            systemSymbolName: symbolName,
+            accessibilityDescription: nil
+        ) != nil
+        #else
+        return false
+        #endif
+    }
+
     var arrowColor: Color {
         let userUUID = UUIDManager.getUUID()
         if wishResponse.votingUsers.contains(where: { user in user.uuid == userUUID }) {
@@ -262,48 +316,22 @@ extension WishView {
     var textColor: Color {
         switch colorScheme {
         case .light:
-
-            if let color = WishKit.theme.textColor {
-                return color.light
-            }
-
-            return .black
+            WishKit.theme.textColor?.light ?? .black
         case .dark:
-            if let color = WishKit.theme.textColor {
-                return color.dark
-            }
-
-            return .white
+            WishKit.theme.textColor?.dark ?? .white
         @unknown default:
-            if let color = WishKit.theme.textColor {
-                return color.light
-            }
-
-            return .black
+            WishKit.theme.textColor?.light ?? .black
         }
     }
 
     var backgroundColor: Color {
         switch colorScheme {
         case .light:
-
-            if let color = WishKit.theme.secondaryColor {
-                return color.light
-            }
-
-            return PrivateTheme.elementBackgroundColor.light
+            WishKit.theme.secondaryColor?.light ?? PrivateTheme.elementBackgroundColor.light
         case .dark:
-            if let color = WishKit.theme.secondaryColor {
-                return color.dark
-            }
-
-            return PrivateTheme.elementBackgroundColor.dark
+            WishKit.theme.secondaryColor?.dark ?? PrivateTheme.elementBackgroundColor.dark
         @unknown default:
-            if let color = WishKit.theme.secondaryColor {
-                return color.light
-            }
-
-            return PrivateTheme.elementBackgroundColor.light
+            WishKit.theme.secondaryColor?.light ?? PrivateTheme.elementBackgroundColor.light
         }
     }
 }

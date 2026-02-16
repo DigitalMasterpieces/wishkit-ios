@@ -42,7 +42,7 @@ import WishKit
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-	WishKit.configure(with: "your_api_key")
+	    WishKit.configure(with: "your_api_key")
         return true
     }
     
@@ -110,7 +110,7 @@ struct ContentView: View {
 ---
 
 # Configuration
-#### You can configure a lof of WishKit's UI elements.
+#### You can configure a lot of WishKit's UI elements.
 
 ```swift
 // Allow user to undo their vote
@@ -207,4 +207,4 @@ WishKit.config.localization.cancel = NSLocalizedString("general.cancel", comment
 ---
 
 ### **Example Project**
-Checkout the [example project](https://github.com/wishkit/wishkit-ios-example) to see how easy it is to set up a wishlist!
+Checkout the [example project](https://github.com/wishkit/wishkit-ios-example) to see how easy it is to set up WishKit!
