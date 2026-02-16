@@ -88,11 +88,11 @@ struct WishlistViewIOS: View {
 
     private var feedbackStateSelection: [LocalWishState] {
         return [
-            .all,
-            .library(.pending),
+//            .all,
+//            .library(.pending),
             .library(.inReview),
-            .library(.planned),
-            .library(.inProgress),
+//            .library(.planned),
+//            .library(.inProgress),
             .library(.completed),
         ]
     }
