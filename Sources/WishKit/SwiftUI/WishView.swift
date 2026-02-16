@@ -102,7 +102,7 @@ struct WishView: View {
 
                     Spacer()
 
-                    if viewKind == .list && WishKit.config.statusBadge == .show {
+                    if viewKind == .list && shouldShowBadge(for: wishResponse.state) {
                         Text(wishResponse.state.description.uppercased())
                             .opacity(0.8)
                             .font(.system(size: 10, weight: .medium))
@@ -211,6 +211,17 @@ struct WishView: View {
             @unknown default:
                 return WishKit.theme.badgeColor.rejected.light
             }
+        }
+    }
+
+    private func shouldShowBadge(for state: WishState) -> Bool {
+        switch WishKit.config.statusBadge {
+        case .show:
+            return true
+        case .hide:
+            return false
+        case .only(let targetState):
+            return state == targetState
         }
     }
 

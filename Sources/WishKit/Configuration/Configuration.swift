@@ -7,11 +7,12 @@
 //
 
 import Foundation
+import WishKitShared
 
 public struct Configuration {
 
     /// Hides/Shows the status badge of a wish e.g. "Approved" or "Implemented".
-    public var statusBadge: Display
+    public var statusBadge: StatusDisplay
 
     public var localization: Localization
 
@@ -36,7 +37,7 @@ public struct Configuration {
     public var onWishSubmitCallback: (() -> Void)?
 
     init(
-        statusBadgeDisplay: Display = .hide,
+        statusBadgeDisplay: StatusDisplay = .hide,
         localization: Localization = .default()
     ) {
         self.statusBadge = statusBadgeDisplay
@@ -50,6 +51,12 @@ extension Configuration {
     public enum Display {
         case show
         case hide
+    }
+
+    public enum StatusDisplay {
+        case show
+        case hide
+        case only(WishState)
     }
 }
 
